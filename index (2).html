@@ -234,7 +234,7 @@
   <div class="wrap">
     <p class="label mono">IEEE LRAC 2.0 Challenge · ICASSP 2027</p>
     <h1>Robust Low-Bitrate Neural Speech Coding for Resource-Constrained Communications</h1>
-    <p class="sub">A hybrid LPC–neural architecture for speech compression that stays intelligible under tight bitrate, latency, and compute budgets — built for embedded and mobile devices, not data centers.</p>
+    <p class="sub">A hybrid LPC–neural architecture for speech compression that stays intelligible under tight bitrate, latency, and compute budgets in accordance with the LRAC 2.0 Challenge.</p>
 
     <svg class="waveform" viewBox="0 0 700 110" xmlns="http://www.w3.org/2000/svg">
       <path class="wf-original" d="M0,55 C10,20 20,90 30,55 C40,25 50,85 60,55 C70,15 80,95 90,55 C100,30 110,80 120,55 C130,20 140,90 150,55 C160,28 170,82 180,55 C190,18 200,92 210,55 C220,32 230,78 240,55 C250,22 260,88 270,55 C280,30 290,80 300,55" />
@@ -255,15 +255,15 @@
 <section id="overview">
   <div class="wrap">
     <h2>The problem</h2>
-    <p>Neural speech codecs can deliver strong perceptual quality, but the architectures that make this possible — deep encoders, residual vector quantization, GAN-based decoders — are expensive to run and slow to respond. On embedded systems and mobile devices, every one of bitrate, latency, memory, and compute has to be controlled at once, and most learned codecs are only tuned for one or two of those at a time.</p>
-    <p>This project studies whether a hybrid design can do better: let a classical Linear Predictive Coding (LPC) front end carry the predictable structure of speech, and let a lightweight neural network handle only what's left over.</p>
+    <p>Neural speech codecs can deliver strong perceptual quality, but the architectures that make this possible are computational expensive and have high latency. On embedded systems and mobile devices, bitrate, latency, memory, and compute has to be controlled at once, and most learned codecs are only tuned for one or two of those at a time.</p>
+    <p>This project studies whether a hybrid design can do better: let a classical Linear Predictive Coding (LPC) front end carry the predictable structure of speech, and let a lightweight neural network handle the residuals. </p>
   </div>
 </section>
 
 <section id="approach">
   <div class="wrap">
     <h2>Our approach</h2>
-    <p>Each frame of speech is split into what a simple linear model can already predict, and what it can't. Only the "can't" part goes through the neural network — which keeps the learned component small.</p>
+    <p>Each frame of speech is split into what a simple linear model can already predict, and what it can't. Only the redisuals part goes through the neural network, this keeps the learned component small.</p>
     <div class="pipeline">
       <div class="pipe-step">
         <div class="n mono">01</div>
@@ -273,7 +273,7 @@
       <div class="pipe-step">
         <div class="n mono">02</div>
         <h3>Neural residual encoder</h3>
-        <p>A lightweight encoder compresses the residual — not the full waveform — into a latent representation.</p>
+        <p>A lightweight encoder compresses the residual into a latent representation.</p>
       </div>
       <div class="pipe-step">
         <div class="n mono">03</div>
@@ -307,7 +307,6 @@
         <h3>📄 Project Proposal</h3>
         <p>Problem framing, related work, proposed architecture, and evaluation plan.</p>
       </div>
-      <!-- EDIT ME: same link as the hero button above -->
       <a class="btn placeholder" href="#">Open Proposal</a>
     </div>
     <p class="file-note">Checkpoint report, final report, and summary will be added here as they're completed.</p>
@@ -323,15 +322,14 @@
         <h3>Andrew Thibodeau</h3>
         <p class="role">Computer Science</p>
         <p class="aff">Virginia Tech, Alexandria, VA</p>
-        <!-- EDIT ME: replace with real email -->
-        <a class="email" href="mailto:REPLACE_EMAIL@vt.edu">Email</a>
+        <a class="email" href="mailto:tandrew03@vt.edu">Email</a>
       </div>
       <div class="member">
         <div class="avatar">WC</div>
         <h3>Wayne Cleary</h3>
         <p class="role">Computer Science</p>
         <p class="aff">Virginia Tech, Alexandria, VA</p>
-        <a class="email" href="mailto:REPLACE_EMAIL@vt.edu">Email</a>
+        <a class="email" href="mailto:waynercleary@vt.edu">Email</a>
       </div>
       <div class="member">
         <div class="avatar">MH</div>
@@ -346,7 +344,7 @@
 
 <footer>
   <div class="wrap">
-    © 2026 Virginia Tech — Robust Low-Bitrate Neural Speech Coding, IEEE LRAC 2.0 Challenge
+    © 2026 Virginia Tech Robust Low-Bitrate Neural Speech Coding, IEEE LRAC 2.0 Challenge
   </div>
 </footer>
 
