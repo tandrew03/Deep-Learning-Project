@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robust Low-Bitrate Neural Speech Coding</title>
+<style>
+  :root{
+    --bg:#15171B;
+    --panel:#1B1E23;
+    --panel-2:#1F2329;
+    --line:#2B2F36;
+    --ink:#ECE8E1;
+    --muted:#9BA0A8;
+    --accent:#E3A63E;
+    --accent-soft:rgba(227,166,62,0.14);
+    --teal:#57B8A8;
+    --maxw:840px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  a{color:var(--accent);}
+  img,svg{max-width:100%;}
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    border-bottom:1px solid var(--line);
+    padding:72px 0 56px;
+    background:
+      radial-gradient(600px 300px at 85% -10%, var(--accent-soft), transparent 70%),
+      var(--bg);
+  }
+  .hero .label{
+    font-size:13px;
+    color:var(--muted);
+    margin:0 0 18px;
+    letter-spacing:.01em;
+  }
+  .hero h1{
+    font-size:clamp(28px,4.4vw,42px);
+    line-height:1.15;
+    margin:0 0 16px;
+    font-weight:650;
+    max-width:15ch;
+  }
+  .hero p.sub{
+    font-size:17px;
+    color:var(--muted);
+    max-width:56ch;
+    margin:0 0 32px;
+  }
+  .waveform{
+    width:100%;
+    height:auto;
+    margin:8px 0 32px;
+    display:block;
+  }
+  .waveform path{
+    fill:none;
+    stroke-width:1.6;
+  }
+  .wf-original{
+    stroke:var(--muted);
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:draw 1.8s ease-out forwards;
+  }
+  .wf-encoded{
+    stroke:var(--accent);
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:draw 1.8s ease-out .4s forwards;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  @media (prefers-reduced-motion: reduce){
+    .wf-original,.wf-encoded{animation:none;stroke-dashoffset:0;}
+  }
+  .wf-caption{
+    display:flex;
+    gap:22px;
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:-14px;
+  }
+  .wf-caption span{display:flex;align-items:center;gap:6px;}
+  .swatch{width:10px;height:2px;display:inline-block;}
+
+  .btn-row{display:flex;flex-wrap:wrap;gap:12px;}
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 18px;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    text-decoration:none;
+    font-size:14.5px;
+    font-weight:600;
+    background:transparent;
+    transition:background .15s ease, color .15s ease;
+  }
+  .btn:hover{background:var(--accent);color:#191B1F;}
+  .btn.placeholder{
+    border-style:dashed;
+    color:var(--muted);
+    border-color:var(--line);
+  }
+  .btn.placeholder:hover{background:transparent;color:var(--muted);cursor:not-allowed;}
+
+  /* ---------- Sections ---------- */
+  section{padding:52px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  h2{
+    font-size:22px;
+    font-weight:650;
+    margin:0 0 18px;
+  }
+  section p{color:#CFCBC2;max-width:68ch;}
+
+  /* Pipeline */
+  .pipeline{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    margin-top:28px;
+    border:1px solid var(--line);
+  }
+  .pipe-step{
+    flex:1 1 150px;
+    padding:20px 18px;
+    border-right:1px solid var(--line);
+    background:var(--panel);
+  }
+  .pipe-step:last-child{border-right:none;}
+  .pipe-step .n{
+    font-size:11px;
+    color:var(--accent);
+    margin-bottom:8px;
+  }
+  .pipe-step h3{
+    font-size:14.5px;
+    margin:0 0 6px;
+    font-weight:650;
+  }
+  .pipe-step p{
+    font-size:13px;
+    color:var(--muted);
+    margin:0;
+  }
+
+  /* Bitrate chips */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+  .chip{
+    border:1px solid var(--line);
+    padding:8px 14px;
+    font-size:13.5px;
+    color:var(--ink);
+    background:var(--panel);
+  }
+  .chip b{color:var(--accent);}
+
+  /* Files */
+  .file-card{
+    border:1px solid var(--line);
+    background:var(--panel);
+    padding:22px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-top:20px;
+  }
+  .file-card h3{margin:0 0 4px;font-size:16px;}
+  .file-card p{margin:0;font-size:13.5px;color:var(--muted);max-width:44ch;}
+  .file-note{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:14px;
+  }
+
+  /* Team */
+  .team-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:22px;
+    margin-top:24px;
+  }
+  .member{
+    border:1px solid var(--line);
+    background:var(--panel);
+    padding:22px;
+  }
+  .avatar{
+    width:46px;height:46px;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:650;
+    margin-bottom:16px;
+  }
+  .member h3{margin:0 0 4px;font-size:15.5px;}
+  .member .role{color:var(--muted);font-size:13px;margin:0 0 2px;}
+  .member .aff{color:var(--muted);font-size:13px;margin:0 0 12px;}
+  .member a.email{font-size:13px;}
+
+  footer{
+    padding:32px 0 48px;
+    color:var(--muted);
+    font-size:13px;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="label mono">IEEE LRAC 2.0 Challenge · ICASSP 2027</p>
+    <h1>Robust Low-Bitrate Neural Speech Coding for Resource-Constrained Communications</h1>
+    <p class="sub">A hybrid LPC–neural architecture for speech compression that stays intelligible under tight bitrate, latency, and compute budgets — built for embedded and mobile devices, not data centers.</p>
+
+    <svg class="waveform" viewBox="0 0 700 110" xmlns="http://www.w3.org/2000/svg">
+      <path class="wf-original" d="M0,55 C10,20 20,90 30,55 C40,25 50,85 60,55 C70,15 80,95 90,55 C100,30 110,80 120,55 C130,20 140,90 150,55 C160,28 170,82 180,55 C190,18 200,92 210,55 C220,32 230,78 240,55 C250,22 260,88 270,55 C280,30 290,80 300,55" />
+      <path class="wf-encoded" d="M340,55 L360,55 M380,40 L380,70 M410,25 L410,85 M440,45 L440,65 M470,15 L470,95 M500,40 L500,70 M530,30 L530,80 M560,45 L560,65 M590,20 L590,90 M620,50 L620,60 M650,35 L650,75" />
+    </svg>
+    <div class="wf-caption">
+      <span><span class="swatch" style="background:var(--muted)"></span>original speech waveform</span>
+      <span><span class="swatch" style="background:var(--accent)"></span>quantized residual (encoded)</span>
+    </div>
+
+    <div class="btn-row">
+      <!-- EDIT ME: replace href="#" below with your proposal PDF/doc link -->
+      <a class="btn placeholder" href="#" id="proposal-link">📄 View Project Proposal — link coming soon</a>
+    </div>
+  </div>
+</header>
+
+<section id="overview">
+  <div class="wrap">
+    <h2>The problem</h2>
+    <p>Neural speech codecs can deliver strong perceptual quality, but the architectures that make this possible — deep encoders, residual vector quantization, GAN-based decoders — are expensive to run and slow to respond. On embedded systems and mobile devices, every one of bitrate, latency, memory, and compute has to be controlled at once, and most learned codecs are only tuned for one or two of those at a time.</p>
+    <p>This project studies whether a hybrid design can do better: let a classical Linear Predictive Coding (LPC) front end carry the predictable structure of speech, and let a lightweight neural network handle only what's left over.</p>
+  </div>
+</section>
+
+<section id="approach">
+  <div class="wrap">
+    <h2>Our approach</h2>
+    <p>Each frame of speech is split into what a simple linear model can already predict, and what it can't. Only the "can't" part goes through the neural network — which keeps the learned component small.</p>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="n mono">01</div>
+        <h3>LPC analysis</h3>
+        <p>Input speech is split into short frames; LPC extracts the predictable spectral envelope and an excitation residual.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="n mono">02</div>
+        <h3>Neural residual encoder</h3>
+        <p>A lightweight encoder compresses the residual — not the full waveform — into a latent representation.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="n mono">03</div>
+        <h3>Quantization</h3>
+        <p>The latent representation is discretized to hit a target bitrate.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="n mono">04</div>
+        <h3>LPC synthesis</h3>
+        <p>A neural decoder reconstructs the residual, which is filtered back through the LPC model to rebuild speech.</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top:44px;">Evaluated across five bitrates</h2>
+    <p>The system is benchmarked against the LRAC 2.0 baseline on clean, noisy, reverberant, and multilingual speech, at:</p>
+    <div class="chips">
+      <div class="chip"><b>1</b> kbps</div>
+      <div class="chip"><b>6</b> kbps</div>
+      <div class="chip"><b>12</b> kbps</div>
+      <div class="chip"><b>24</b> kbps</div>
+      <div class="chip"><b>32</b> kbps</div>
+    </div>
+  </div>
+</section>
+
+<section id="files">
+  <div class="wrap">
+    <h2>Project Files</h2>
+    <div class="file-card">
+      <div>
+        <h3>📄 Project Proposal</h3>
+        <p>Problem framing, related work, proposed architecture, and evaluation plan.</p>
+      </div>
+      <!-- EDIT ME: same link as the hero button above -->
+      <a class="btn placeholder" href="#">Open Proposal</a>
+    </div>
+    <p class="file-note">Checkpoint report, final report, and summary will be added here as they're completed.</p>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <h2>Meet the Team</h2>
+    <div class="team-grid">
+      <div class="member">
+        <div class="avatar">AT</div>
+        <h3>Andrew Thibodeau</h3>
+        <p class="role">Computer Science</p>
+        <p class="aff">Virginia Tech, Alexandria, VA</p>
+        <!-- EDIT ME: replace with real email -->
+        <a class="email" href="mailto:REPLACE_EMAIL@vt.edu">Email</a>
+      </div>
+      <div class="member">
+        <div class="avatar">WC</div>
+        <h3>Wayne Cleary</h3>
+        <p class="role">Computer Science</p>
+        <p class="aff">Virginia Tech, Alexandria, VA</p>
+        <a class="email" href="mailto:REPLACE_EMAIL@vt.edu">Email</a>
+      </div>
+      <div class="member">
+        <div class="avatar">MH</div>
+        <h3>Matthew Hearne</h3>
+        <p class="role">Computer Science</p>
+        <p class="aff">Virginia Tech, Alexandria, VA</p>
+        <a class="email" href="mailto:REPLACE_EMAIL@vt.edu">Email</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    © 2026 Virginia Tech — Robust Low-Bitrate Neural Speech Coding, IEEE LRAC 2.0 Challenge
+  </div>
+</footer>
+
+</body>
+</html>
